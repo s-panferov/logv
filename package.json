@@ -1,13 +1,14 @@
 {
-	"name": "runa-dev",
+	"name": "@logv/monorepo",
 	"version": "0.0.1",
 	"private": true,
-	"description": "Mono-repo for runa.dev projects",
+	"description": "Mono-repo for LogV project",
 	"main": "index.js",
 	"workspaces": [
 		"packages/build",
 		"packages/logv-lib",
-		"packages/logv-ui"
+		"packages/logv-ui",
+		"packages/logv-site"
 	],
 	"scripts": {
 		"watch": "tsc -b --watch --incremental",
