@@ -8,12 +8,12 @@ const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin')
 
 const PROD = process.env.NODE_ENV === 'production'
 
-// const ssl = PROD
-// 	? {}
-// 	: {
-// 			key: fs.readFileSync(path.join(__dirname, '.cert/key.pem')),
-// 			cert: fs.readFileSync(path.join(__dirname, '.cert/cert.pem')),
-// 	  }
+const ssl = PROD
+	? {}
+	: {
+			key: fs.readFileSync(path.join(__dirname, '.cert/key.pem')),
+			cert: fs.readFileSync(path.join(__dirname, '.cert/cert.pem')),
+	  }
 
 console.log(PROD ? 'PRODUCTION' : 'DEVELOPMENT')
 
@@ -31,13 +31,13 @@ module.exports = {
 		writeToDisk: true,
 		disableHostCheck: true,
 		host: 'local.logv.app',
-		// https: ssl,
+		https: ssl,
 		proxy: {
 			'/api': {
 				target: 'http://localhost:3000',
 				ws: true,
 				secure: false,
-				// ssl,
+				ssl,
 			},
 		},
 	},
@@ -153,7 +153,7 @@ module.exports = {
 			},
 		}),
 		new FaviconsWebpackPlugin({
-			logo: '../logv.site/src/images/favicon.png',
+			logo: '../logv-site/src/images/favicon.png',
 		}),
 	],
 }
