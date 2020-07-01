@@ -1,0 +1,33 @@
+[package]
+name = "logv-ui"
+version = "0.0.4"
+authors = ["Stanislav Panferov <fnight.m@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+# If you uncomment this line, it will enable `wee_alloc`:
+#default = ["wee_alloc"]
+
+[dependencies]
+console_error_panic_hook = "0.1.6"
+ruvie={path="../../../ruvie/packages/ruvie"}
+ruvie-css={path="../../../ruvie/packages/ruvie-css"}
+wasm-bindgen = "*"
+observe={path = "../../../observe/packages/observe", features=["wasm-bindgen-futures-0"]}
+maplit="*"
+serde={version="*", features = ["derive"]}
+futures="0.3"
+reqwest={version="*", features = ["json"]}
+anyhow="*"
+url="*"
+
+# wee_alloc = { version = "0.4.2", optional = true }
+
+[dependencies.web-sys]
+version = "*"
+features = ["MouseEvent", "Location"]

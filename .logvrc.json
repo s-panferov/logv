@@ -1,0 +1,9 @@
+{
+	"message": "a",
+	"date": "MMDDYYYY",
+	"term": {
+		"output": {
+			"ignore": ["req.**.message"]
+		}
+	}
+}

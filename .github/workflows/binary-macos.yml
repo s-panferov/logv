@@ -1,0 +1,39 @@
+name: Macos Binary Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  binary:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --all-features --manifest-path "packages/logv/logv.cli/Cargo.toml"
+      - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        run: |
+          curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+          unzip awscli-bundle.zip
+          sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+          cd ./target/release
+          tar -czvf logv.tar.gz ./logv
+          shasum -a 256 logv.tar.gz > logv.tar.gz.sha256
+          cat logv.tar.gz.sha256
+          aws s3 cp --acl public-read --follow-symlinks logv.tar.gz.sha256 s3://logv.app/releases/$RELEASE_VERSION/x86_64-apple-darwin/logv.tar.gz.sha256
+          aws s3 cp --acl public-read --follow-symlinks logv.tar.gz s3://logv.app/releases/$RELEASE_VERSION/x86_64-apple-darwin/logv.tar.gz
+          aws s3 cp --acl public-read --follow-symlinks logv s3://logv.app/releases/$RELEASE_VERSION/x86_64-apple-darwin/logv

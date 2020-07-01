@@ -1,0 +1,95 @@
+variables:
+  GIT_CLEAN_FLAGS: -ffdx -e node_modules
+
+image: gcr.io/runa-dev/node-docker@sha256:e56f31859d3400863c16c2002543e9055cdb799cd23fb16371fffc14b011514a
+
+before_script:
+  - docker login -u _json_key --password "$GCLOUD_JSON" https://gcr.io
+  - yarn install
+  - ./node_modules/.bin/tsc -b
+
+site:
+  variables:
+    KUBE_NAMESPACE: 'logv'
+    WORKDIR: packages/logv.site
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /\[site\]/'
+      when: always
+    - when: manual
+  environment:
+    name: production
+    url: https://logv.app
+    kubernetes:
+      namespace: logv
+  script:
+    - cd $WORKDIR
+    - yarn run build
+    - git show -s --date=short --pretty='format:%ad-SHA-%h' --date=format:'%Y-%m-%dT%H-%M-%S' > ./version
+    - export IMAGE=gcr.io/runa-dev/site:$(cat ./version)
+    - docker build . --tag $IMAGE
+    - docker push $IMAGE
+    - cd $CI_PROJECT_DIR
+    - yarn --silent run kube $WORKDIR/kube.ts > $WORKDIR/kube.yaml
+    - kubectl apply --namespace $KUBE_NAMESPACE -f $WORKDIR/kube.yaml
+  artifacts:
+    paths:
+      - $WORKDIR/version
+      - $WORKDIR/kube.yaml
+    expire_in: 1 week
+
+server:
+  variables:
+    KUBE_NAMESPACE: 'logv'
+    WORKDIR: packages/logv.server
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /\[server\]/'
+      when: always
+    - when: manual
+  environment:
+    name: production
+    url: https://ui.logv.app
+    kubernetes:
+      namespace: logv
+  script:
+    - cd $WORKDIR
+    - git show -s --date=short --pretty='format:%ad-SHA-%h' --date=format:'%Y-%m-%dT%H-%M-%S' > ./version
+    - export IMAGE=gcr.io/runa-dev/server:$(cat ./version)
+    - docker build . --tag $IMAGE
+    - docker push $IMAGE
+    - cd $CI_PROJECT_DIR
+    - yarn --silent run kube $WORKDIR/kube.ts > $WORKDIR/kube.yaml
+    - kubectl apply --namespace $KUBE_NAMESPACE -f $WORKDIR/kube.yaml
+  artifacts:
+    paths:
+      - $WORKDIR/version
+      - $WORKDIR/kube.yaml
+    expire_in: 1 week
+
+ui:
+  variables:
+    KUBE_NAMESPACE: 'logv'
+    WORKDIR: packages/logv.ui
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /\[ui\]/'
+      when: always
+    - when: manual
+  environment:
+    name: production
+    url: https://ui.logv.app
+    kubernetes:
+      namespace: logv
+  script:
+    - cd $WORKDIR
+    - yarn run build
+    - git show -s --date=short --pretty='format:%ad-SHA-%h' --date=format:'%Y-%m-%dT%H-%M-%S' > ./version
+    - export IMAGE=gcr.io/runa-dev/ui:$(cat ./version)
+    - docker build . --tag $IMAGE
+    - docker push $IMAGE
+    - cd $CI_PROJECT_DIR
+    - yarn --silent run kube $WORKDIR/kube.ts > $WORKDIR/kube.yaml
+    - kubectl apply --namespace $KUBE_NAMESPACE -f $WORKDIR/kube.yaml
+  artifacts:
+    paths:
+      - $WORKDIR/version
+      - $WORKDIR/kube.yaml
+    expire_in: 1 week

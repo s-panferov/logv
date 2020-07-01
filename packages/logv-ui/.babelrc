@@ -1,0 +1,9 @@
+{
+	"presets": ["linaria/babel"],
+	"plugins": [
+		"@babel/plugin-syntax-dynamic-import",
+		"@babel/plugin-proposal-optional-chaining",
+		// "react-hot-loader/babel",
+		["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }] // `style: true` for less
+	]
+}

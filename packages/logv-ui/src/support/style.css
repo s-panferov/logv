@@ -1,0 +1,33 @@
+html {
+	box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+html,
+body,
+#root {
+	height: 100%;
+	color: #4d4d4c;
+	/* background-color: #f1f3f5; */
+	background-color: transparent;
+}
+
+.unselectable {
+	user-select: none;
+	& > * {
+		user-select: none;
+	}
+}
+
+html {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+	overscroll-behavior: none;
+}

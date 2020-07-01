@@ -1,0 +1,12 @@
+{
+	"name": "@logv/lib",
+	"version": "1.0.0",
+	"main": "lib/index.js",
+	"license": "MIT",
+	"types": "lib/index.d.ts",
+	"scripts": {
+		"start": "cd lib && node index.js"
+	},
+	"dependencies": {},
+	"devDependencies": {}
+}

@@ -1,0 +1,8 @@
+[workspace]
+
+members = [
+    "packages/logv-cli",
+    "packages/logv-ui"
+]
+
+ 

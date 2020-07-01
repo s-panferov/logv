@@ -1,0 +1,32 @@
+{
+	"name": "runa-dev",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Mono-repo for runa.dev projects",
+	"main": "index.js",
+	"workspaces": [
+		"packages/build",
+		"packages/logv-lib",
+		"packages/logv-ui"
+	],
+	"scripts": {
+		"watch": "tsc -b --watch --incremental",
+		"start": "cd packages/logv-ui && yarn start",
+		"build": "cd packages/logv-ui && yarn build",
+		"site": "cd packages/logv-site && yarn start",
+		"kube": "yarn exec ts-node -- --transpile-only -O '{\"module\": \"commonjs\"}'"
+	},
+	"resolutions": {
+		"@types/react": "16.9.13",
+		"@types/react-dom": "16.9.4"
+	},
+	"devDependencies": {
+		"@kubernetes/client-node": "^0.12.0",
+		"@types/minimist": "^1.2.0",
+		"@types/yaml": "^1.2.0",
+		"execa": "^4.0.2",
+		"faker": "^4.1.0",
+		"minimist": "^1.2.5",
+		"yaml": "^1.10.0"
+	}
+}
